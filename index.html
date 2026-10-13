@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="TaskFlow - Modern Task Management and Productivity Analytics Dashboard with Kanban board, checklist tracking, and interactive charts.">
+  <title>TaskFlow | Modern Task Management & Productivity Analytics</title>
+  
+  <!-- Modern Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Application Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="app" class="app-layout">
+    <!-- Top Global Navigation Bar -->
+    <header class="app-header glass-panel">
+      <div class="header-left">
+        <div class="brand-logo">
+          <div class="logo-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+              <path d="M2 17l10 5 10-5"></path>
+              <path d="M2 12l10 5 10-5"></path>
+            </svg>
+          </div>
+          <div class="brand-text">
+            <span class="brand-name">TaskFlow</span>
+            <span class="brand-badge">PRO</span>
+          </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <nav class="nav-tabs-wrapper" aria-label="Main Navigation">
+          <button class="nav-tab active" data-tab="analytics" id="tabAnalyticsBtn">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path>
+              <path d="M22 12A10 10 0 0 0 12 2v10z"></path>
+            </svg>
+            <span>Analytics Dashboard</span>
+          </button>
+          <button class="nav-tab" data-tab="kanban" id="tabKanbanBtn">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="3" width="7" height="18" rx="1.5"></rect>
+              <rect x="14" y="3" width="7" height="11" rx="1.5"></rect>
+            </svg>
+            <span>Kanban Board</span>
+          </button>
+          <button class="nav-tab" data-tab="list" id="tabListBtn">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="8" y1="6" x2="21" y2="6"></line>
+              <line x1="8" y1="12" x2="21" y2="12"></line>
+              <line x1="8" y1="18" x2="21" y2="18"></line>
+              <line x1="3" y1="6" x2="3.01" y2="6"></line>
+              <line x1="3" y1="12" x2="3.01" y2="12"></line>
+              <line x1="3" y1="18" x2="3.01" y2="18"></line>
+            </svg>
+            <span>All Tasks</span>
+          </button>
+        </nav>
+      </div>
+
+      <div class="header-right">
+        <!-- Quick Action: Create Task -->
+        <button id="openNewTaskModalBtn" class="btn btn-primary btn-glow">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+          <span>New Task</span>
+        </button>
+
+        <!-- Backup, Notifications & Utility Buttons -->
+        <div class="utility-actions">
+          <button id="notificationToggleBtn" class="btn-icon btn-notification" title="Due Date Reminders & Alerts" aria-label="Notifications and Reminders">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+              <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+            </svg>
+            <span id="notificationBadge" class="notification-indicator-badge" style="display: none;">0</span>
+          </button>
+
+          <button id="exportCsvBtn" class="btn-icon" title="Export to CSV (Excel / Sheets)" aria-label="Export to CSV">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="8" y1="13" x2="16" y2="13"></line>
+              <line x1="8" y1="17" x2="16" y2="17"></line>
+            </svg>
+          </button>
+
+          <button id="exportDataBtn" class="btn-icon" title="Export Backup (JSON)" aria-label="Export Backup as JSON">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+          </button>
+          
+          <button id="importDataBtn" class="btn-icon" title="Import Tasks (JSON)" aria-label="Import Tasks from JSON">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="17 8 12 3 7 8"></polyline>
+              <line x1="12" y1="3" x2="12" y2="15"></line>
+            </svg>
+          </button>
+          <input type="file" id="importFileInput" accept=".json" style="display: none;">
+
+          <button id="resetDemoBtn" class="btn-icon" title="Reset Demo Data" aria-label="Reset Demo Data">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+              <path d="M3 3v5h5"></path>
+            </svg>
+          </button>
+
+          <button id="themeToggleBtn" class="btn-icon" title="Toggle Theme" aria-label="Toggle Theme">
+            <!-- Dynamic SVG Icon injected via JS -->
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Global Search & Filter Toolbar -->
+    <section class="toolbar-section glass-panel">
+      <div class="search-box">
+        <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input type="text" id="taskSearchInput" placeholder="Search tasks, descriptions, or categories..." autocomplete="off">
+      </div>
+
+      <div class="filter-controls">
+        <div class="filter-group">
+          <label for="categoryFilter" class="filter-label">Category</label>
+          <select id="categoryFilter" class="custom-select">
+            <option value="all">All Categories</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label for="priorityFilter" class="filter-label">Priority</label>
+          <select id="priorityFilter" class="custom-select">
+            <option value="all">All Priorities</option>
+            <option value="urgent">Urgent</option>
+            <option value="high">High</option>
+            <option value="medium">Medium</option>
+            <option value="low">Low</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label for="statusFilter" class="filter-label">Status</label>
+          <select id="statusFilter" class="custom-select">
+            <option value="all">All Statuses</option>
+            <option value="todo">To Do</option>
+            <option value="in-progress">In Progress</option>
+            <option value="in-review">Under Review</option>
+            <option value="completed">Done</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label for="recurringFilter" class="filter-label">Recurrence</label>
+          <select id="recurringFilter" class="custom-select">
+            <option value="all">All Recurrence</option>
+            <option value="none">One-time</option>
+            <option value="recurring">All Recurring</option>
+            <option value="daily">Daily</option>
+            <option value="weekly">Weekly</option>
+            <option value="monthly">Monthly</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label for="sortSelect" class="filter-label">Sort By</label>
+          <select id="sortSelect" class="custom-select">
+            <option value="dueDate-asc">Due Date (Earliest First)</option>
+            <option value="dueDate-desc">Due Date (Latest First)</option>
+            <option value="priority-desc">Priority (Highest Severity)</option>
+            <option value="priority-asc">Priority (Lowest Severity)</option>
+            <option value="title-asc">Alphabetical (A - Z)</option>
+            <option value="title-desc">Alphabetical (Z - A)</option>
+            <option value="created-desc">Date Created (Newest First)</option>
+            <option value="created-asc">Date Created (Oldest First)</option>
+            <option value="status">Status Stage</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Views Area -->
+    <main class="main-content">
+      <!-- 1. PRODUCTIVITY ANALYTICS VIEW -->
+      <section id="analyticsView" class="view-section active">
+        <!-- Top Executive KPI Metric Cards -->
+        <div class="kpi-grid">
+          <div class="kpi-card glass-card">
+            <div class="kpi-header">
+              <span class="kpi-title">Total Tasks</span>
+              <span class="kpi-icon-badge color-indigo">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                  <polyline points="14 2 14 8 20 8"></polyline>
+                </svg>
+              </span>
+            </div>
+            <div class="kpi-value" id="metricTotalTasks">0</div>
+            <span class="kpi-sub">Overall tracked workload</span>
+          </div>
+
+          <div class="kpi-card glass-card">
+            <div class="kpi-header">
+              <span class="kpi-title">Completed</span>
+              <span class="kpi-icon-badge color-emerald">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                  <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                </svg>
+              </span>
+            </div>
+            <div class="kpi-value text-emerald" id="metricCompletedTasks">0</div>
+            <span class="kpi-sub">Successfully closed</span>
+          </div>
+
+          <div class="kpi-card glass-card">
+            <div class="kpi-header">
+              <span class="kpi-title">Completion Rate</span>
+              <span class="kpi-icon-badge color-cyan">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <path d="M12 6v6l4 2"></path>
+                </svg>
+              </span>
+            </div>
+            <div class="kpi-value text-cyan" id="metricCompletionRate">0%</div>
+            <div class="kpi-mini-track">
+              <div class="kpi-mini-fill" id="metricRateBar" style="width: 0%;"></div>
+            </div>
+          </div>
+
+          <div class="kpi-card glass-card">
+            <div class="kpi-header">
+              <span class="kpi-title">Overdue Items</span>
+              <span class="kpi-icon-badge color-rose">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"></polygon>
+                  <line x1="12" y1="8" x2="12" y2="12"></line>
+                  <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+              </span>
+            </div>
+            <div class="kpi-value text-rose" id="metricOverdueTasks">0</div>
+            <span class="kpi-sub">Missed target dates</span>
+          </div>
+
+          <div class="kpi-card glass-card score-highlight">
+            <div class="kpi-header">
+              <span class="kpi-title">Productivity Score</span>
+              <span class="kpi-icon-badge color-amber">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                </svg>
+              </span>
+            </div>
+            <div class="kpi-value score-number" id="metricProductivityScore">0</div>
+            <span class="kpi-sub">Calculated execution index (0-100)</span>
+          </div>
+        </div>
+
+        <!-- Dynamic Productivity Insights Row -->
+        <div class="insights-banner-wrapper">
+          <div class="insights-label">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2">
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+            </svg>
+            <span>Productivity Intelligence & Focus Areas</span>
+          </div>
+          <div id="productivityInsightsContainer" class="insights-pills-row"></div>
+        </div>
+
+        <!-- Interactive Visual Charts Grid -->
+        <div class="charts-dashboard-grid">
+          <!-- Status Distribution Donut -->
+          <div class="chart-card glass-card">
+            <div class="chart-card-header">
+              <h3>Task Status Distribution</h3>
+              <span class="chart-tag">Real-time Proportion</span>
+            </div>
+            <div id="donutChartContainer" class="chart-render-box"></div>
+          </div>
+
+          <!-- 7-Day Velocity Trend -->
+          <div class="chart-card glass-card">
+            <div class="chart-card-header">
+              <h3>7-Day Completion Velocity</h3>
+              <span class="chart-tag">Sprint Trend</span>
+            </div>
+            <div id="velocityChartContainer" class="chart-render-box"></div>
+          </div>
+
+          <!-- Priority Workload Intensity -->
+          <div class="chart-card glass-card">
+            <div class="chart-card-header">
+              <h3>Priority Breakdown</h3>
+              <span class="chart-tag">Severity Distribution</span>
+            </div>
+            <div id="priorityChartContainer" class="chart-render-box"></div>
+          </div>
+
+          <!-- Category Workload -->
+          <div class="chart-card glass-card">
+            <div class="chart-card-header">
+              <h3>Category Workload</h3>
+              <span class="chart-tag">Project Split</span>
+            </div>
+            <div id="categoryChartContainer" class="chart-render-box"></div>
+          </div>
+        </div>
+
+        <!-- Recent Focus Tasks Widget -->
+        <div class="analytics-bottom-grid">
+          <div class="recent-tasks-panel glass-card">
+            <div class="panel-header">
+              <h3>Active Focus Backlog</h3>
+              <button class="btn-text" onclick="document.getElementById('tabListBtn').click()">View All Tasks →</button>
+            </div>
+            <div id="analyticsRecentTasksList" class="recent-tasks-container"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. KANBAN BOARD VIEW -->
+      <section id="kanbanView" class="view-section">
+        <div class="kanban-view-header">
+          <div>
+            <h2>Interactive Kanban Workflow</h2>
+            <p>Drag and drop task cards across workflow columns to update statuses instantly.</p>
+          </div>
+        </div>
+        <div id="kanbanContainer" class="kanban-outer-container"></div>
+      </section>
+
+      <!-- 3. DETAILED LIST VIEW -->
+      <section id="listView" class="view-section">
+        <div class="list-view-header">
+          <div>
+            <h2>Task Inventory</h2>
+            <p>Comprehensive list of tasks with interactive checklists, priorities, and dates.</p>
+          </div>
+          <button class="btn btn-secondary" onclick="document.getElementById('openNewTaskModalBtn').click()">
+            + Add Task
+          </button>
+        </div>
+        <div id="taskListContainer" class="task-list-outer-container"></div>
+      </section>
+    </main>
+
+    <!-- Task Create / Edit Modal -->
+    <div id="taskModal" class="modal-backdrop">
+      <div class="modal-dialog glass-panel" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+        <div class="modal-header">
+          <h3 id="modalTitle">Create New Task</h3>
+          <button type="button" id="taskModalCloseBtn" class="btn-icon" aria-label="Close modal">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+
+        <form id="taskForm" class="modal-body">
+          <div class="form-row">
+            <label for="taskTitleInput" class="form-label required">Task Title</label>
+            <input type="text" id="taskTitleInput" class="form-input" placeholder="e.g. Redesign User Profile Modal" required>
+          </div>
+
+          <div class="form-row">
+            <label for="taskDescInput" class="form-label">Description / Scope Notes</label>
+            <textarea id="taskDescInput" class="form-textarea" rows="3" placeholder="Provide context, constraints, or expected deliverables..."></textarea>
+          </div>
+
+          <div class="form-grid-4">
+            <div class="form-row">
+              <label for="taskPriorityInput" class="form-label">Priority</label>
+              <select id="taskPriorityInput" class="form-select">
+                <option value="urgent">Urgent</option>
+                <option value="high">High</option>
+                <option value="medium" selected>Medium</option>
+                <option value="low">Low</option>
+              </select>
+            </div>
+
+            <div class="form-row">
+              <label for="taskStatusInput" class="form-label">Status</label>
+              <select id="taskStatusInput" class="form-select">
+                <option value="todo" selected>To Do</option>
+                <option value="in-progress">In Progress</option>
+                <option value="in-review">Under Review</option>
+                <option value="completed">Done</option>
+              </select>
+            </div>
+
+            <div class="form-row">
+              <label for="taskCategoryInput" class="form-label">Category / Project</label>
+              <input type="text" id="taskCategoryInput" class="form-input" placeholder="e.g. Dev, Design" list="defaultCategories">
+              <datalist id="defaultCategories">
+                <option value="Dev"></option>
+                <option value="Design"></option>
+                <option value="Product"></option>
+                <option value="Marketing"></option>
+                <option value="Finance"></option>
+                <option value="Team"></option>
+                <option value="Personal"></option>
+              </datalist>
+            </div>
+
+            <div class="form-row">
+              <label for="taskRecurringInput" class="form-label">Recurrence</label>
+              <select id="taskRecurringInput" class="form-select">
+                <option value="none" selected>No Repeat</option>
+                <option value="daily">Daily</option>
+                <option value="weekly">Weekly</option>
+                <option value="monthly">Monthly</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <label for="taskDueDateInput" class="form-label">Target Due Date</label>
+            <input type="date" id="taskDueDateInput" class="form-input">
+          </div>
+
+          <!-- Dynamic Subtasks Checklist -->
+          <div class="subtasks-form-section">
+            <label class="form-label">Interactive Checklist & Subtasks</label>
+            <div class="subtask-add-row">
+              <input type="text" id="newSubtaskInput" class="form-input" placeholder="Add a checklist item (e.g. Review pull request)">
+              <button type="button" id="addSubtaskBtn" class="btn btn-secondary">Add</button>
+            </div>
+            <div id="subtasksListContainer" class="subtasks-builder-box"></div>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" id="cancelTaskBtn" class="btn btn-ghost">Cancel</button>
+            <button type="submit" class="btn btn-primary btn-glow">Save Task</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Custom Accessible Confirmation Modal Dialog -->
+    <div id="confirmModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="confirmModalTitle">
+      <div class="confirm-dialog glass-panel">
+        <div class="confirm-icon-box" id="confirmModalIcon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#f43f5e" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          </svg>
+        </div>
+        <div class="confirm-content">
+          <h3 id="confirmModalTitle">Confirm Action</h3>
+          <p id="confirmModalMessage">Are you sure you want to perform this action?</p>
+        </div>
+        <div class="confirm-actions">
+          <button type="button" id="confirmCancelBtn" class="btn btn-ghost">Cancel</button>
+          <button type="button" id="confirmOkBtn" class="btn btn-danger">Confirm</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="toastContainer" class="toast-container" aria-live="polite"></div>
+  </div>
+
+  <!-- Application Logic Scripts -->
+  <script src="js/storage.js"></script>
+  <script src="js/analytics.js"></script>
+  <script src="js/kanban.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
